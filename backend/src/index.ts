@@ -1,10 +1,12 @@
 ﻿import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import marineRouter from './routes/marine';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/api/marine', marineRouter);
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
