@@ -1,0 +1,22 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    image: wave-app-backend:latest
+    container_name: wave-app-backend
+    environment:
+      - PORT=4000
+    ports:
+      - "4000:4000"
+
+  frontend:
+    build:
+      context: ./frontend
+    image: wave-app-frontend:latest
+    container_name: wave-app-frontend
+    environment:
+      - VITE_BACKEND_URL=http://backend:4000
+    depends_on:
+      - backend
+    ports:
+      - "8080:8080"

@@ -1,7 +1,7 @@
 ﻿import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import marineRouter from './routes/marine';
+import marineRouter from './routes/marine.js';
 
 const app = express();
 app.use(cors());

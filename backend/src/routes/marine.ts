@@ -42,16 +42,16 @@ marineRouter.get('/', async (_req, res) => {
         const [mr, wr] = await Promise.all([fetch(marineUrl), fetch(weatherUrl)]);
         if (!mr.ok) throw new Error(`Upstream marine error ${mr.status}`);
         if (!wr.ok) throw new Error(`Upstream weather error ${wr.status}`);
-        const marine = await mr.json();
-        const weather = await wr.json();
+        const marine = (await mr.json()) as any;
+        const weather = (await wr.json()) as any;
         const merged = {
-          ...marine,
+          ...(marine as Record<string, unknown>),
           hourly: {
-            ...marine.hourly,
+            ...((marine?.hourly as Record<string, unknown>) ?? {}),
             wind_speed_10m: weather?.hourly?.wind_speed_10m,
             wind_direction_10m: weather?.hourly?.wind_direction_10m
           }
-        };
+        } as any;
         return { city: city.name, data: merged };
       })
     );
@@ -73,8 +73,8 @@ marineRouter.get('/search', async (req, res) => {
     const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1&language=en&format=json`;
     const geoRes = await fetch(geoUrl);
     if (!geoRes.ok) throw new Error(`Geocoding error ${geoRes.status}`);
-    const geoData = await geoRes.json();
-    const first = geoData?.results?.[0];
+    const geoData = (await geoRes.json()) as any;
+    const first = (geoData?.results ?? [])[0];
     if (!first) return res.status(404).json({ error: 'Place not found' });
 
     const params = new URLSearchParams({
@@ -97,16 +97,16 @@ marineRouter.get('/search', async (req, res) => {
     const [mr, wr] = await Promise.all([fetch(marineUrl), fetch(weatherUrl)]);
     if (!mr.ok) throw new Error(`Marine error ${mr.status}`);
     if (!wr.ok) throw new Error(`Weather error ${wr.status}`);
-    const marine = await mr.json();
-    const weather = await wr.json();
+    const marine = (await mr.json()) as any;
+    const weather = (await wr.json()) as any;
     const merged = {
-      ...marine,
+      ...(marine as Record<string, unknown>),
       hourly: {
-        ...marine.hourly,
+        ...((marine?.hourly as Record<string, unknown>) ?? {}),
         wind_speed_10m: weather?.hourly?.wind_speed_10m,
         wind_direction_10m: weather?.hourly?.wind_direction_10m
       }
-    };
+    } as any;
     res.json({ spot: { city: first.name, latitude: first.latitude, longitude: first.longitude }, data: merged });
   } catch (error) {
     console.error('marine search error', error);
@@ -122,8 +122,8 @@ marineRouter.get('/suggest', async (req, res) => {
     const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=en&format=json`;
     const geoRes = await fetch(geoUrl);
     if (!geoRes.ok) throw new Error(`Geocoding error ${geoRes.status}`);
-    const geoData = await geoRes.json();
-    const results = (geoData?.results || []).map((r: any) => ({
+    const geoData = (await geoRes.json()) as any;
+    const results = ((geoData?.results as any[]) || []).map((r: any) => ({
       name: r.name,
       latitude: r.latitude,
       longitude: r.longitude,
