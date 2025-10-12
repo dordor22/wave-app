@@ -17,3 +17,5 @@ pnpm-debug.log*
 frontend/build/
 frontend/dist/
 backend/dist/
+frontend.tar
+backend.tar
