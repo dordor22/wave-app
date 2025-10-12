@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wave-app-main
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/dordor22/wave-app'
+    targetRevision: 'main'
+    path: 'k3s'
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
