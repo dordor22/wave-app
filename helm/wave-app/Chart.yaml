@@ -1,0 +1,6 @@
+apiVersion: v2
+name: wave-app
+version: 0.1.0
+description: Helm chart for Wave App (frontend + backend) on k3s
+type: application
+appVersion: "0.1.0"
