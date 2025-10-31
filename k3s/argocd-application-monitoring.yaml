@@ -1,0 +1,60 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-stack
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: "^58."
+    chart: kube-prometheus-stack
+    helm:
+      values: |
+        # Expose Grafana via NodePort
+        grafana:
+          adminPassword: admin
+          service:
+            type: NodePort
+            nodePort: 32000
+          ingress:
+            enabled: false
+          sidecar:
+            dashboards:
+              enabled: true
+              label: grafana_dashboard
+              labelValue: "1"
+            datasources:
+              enabled: true
+        # Expose Prometheus via NodePort
+        prometheus:
+          service:
+            type: NodePort
+            nodePort: 32090
+        # Optionally expose Alertmanager via NodePort
+        alertmanager:
+          service:
+            type: NodePort
+            nodePort: 32083
+        # Keep resources modest for k3s
+        defaultRules:
+          create: true
+        kubeControllerManager:
+          enabled: true
+        kubeScheduler:
+          enabled: true
+        kubeProxy:
+          enabled: true
+        prometheusOperator:
+          admissionWebhooks:
+            enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
