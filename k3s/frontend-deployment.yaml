@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
+  namespace: default          # הוסף לשקיפות/עקביות
 spec:
   replicas: 1
   selector:
@@ -17,19 +18,20 @@ spec:
         image: wave-app-frontend:latest
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8080
+        - name: http
+          containerPort: 8080       # זה מה שבאמת מאזין בפוד
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: frontend
+  namespace: default
 spec:
+  type: ClusterIP
   selector:
     app: frontend
   ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 8080
-      nodePort: 30080
-  type: NodePort
-
+  - name: http
+    port: 80
+    targetPort: 8080               # <<< התיקון הקריטי
+    protocol: TCP

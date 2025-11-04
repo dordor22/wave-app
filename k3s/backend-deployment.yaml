@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
+  namespace: default
 spec:
   replicas: 1
   selector:
@@ -29,17 +30,20 @@ spec:
             secretKeyRef:
               name: supabase-secret
               key: SUPABASE_KEY
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: backend
+  namespace: default
 spec:
+  type: ClusterIP
   selector:
     app: backend
   ports:
-    - protocol: TCP
-      port: 4000
-      targetPort: 4000
-  type: ClusterIP
+  - name: http
+    port: 4000
+    targetPort: 4000
+    protocol: TCP
 
