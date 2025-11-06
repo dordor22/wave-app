@@ -6,6 +6,8 @@ import { fetchMarine, searchMarine } from "@/lib/api"
 import { Waves, Wind, Thermometer, Eye, MapPin, Clock, Activity } from "lucide-react"
 import heroWave from "@/assets/hero-wave.jpg"
 import React from "react"
+import { useAuth } from "@/context/AuthProvider"
+import { Link } from "react-router-dom"
 
 const toFt = (meters: number | undefined) => meters == null ? undefined : Math.round(meters * 3.28084)
 
@@ -54,6 +56,7 @@ const useMarine = () => useQuery({
 })
 
 const Index = () => {
+  const { user, signOut } = useAuth()
   const { data, isLoading, isError } = useMarine()
   const spots = data?.spots ?? []
   const [query, setQuery] = React.useState("")
@@ -98,6 +101,19 @@ const Index = () => {
   
   return (
     <div className="min-h-screen bg-gradient-depth">
+      <div className="w-full flex items-center justify-end p-4 gap-3">
+        {user ? (
+          <>
+            <span className="text-sm">מחובר: {user.email}</span>
+            <Button variant="outline" onClick={() => void signOut()}>התנתק</Button>
+          </>
+        ) : (
+          <>
+            <Link to="/login"><Button variant="outline">התחבר</Button></Link>
+            <Link to="/signup"><Button>הרשמה</Button></Link>
+          </>
+        )}
+      </div>
       {/* Hero Section */}
       <section className="relative h-[60vh] overflow-hidden">
         <img 

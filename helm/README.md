@@ -16,6 +16,8 @@ Edit `values.yaml`:
 - `supabase.url`, `supabase.key` or set `supabase.existingSecret`
 - `service.frontend.type` (NodePort/LoadBalancer) and optional `ingress` block
 
+Note: The frontend requires build-time env vars `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` when building the image. Ensure your CI passes them to the build step.
+
 ## Install
 ```bash
 helm upgrade --install wave .\wave-app\helm\wave-app \
