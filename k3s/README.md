@@ -1,5 +1,27 @@
 This folder contains Kubernetes manifests for local k3s testing.
 
+## ⚠️ Secrets Configuration
+
+**IMPORTANT:** Never commit `supabase-secret.yaml` to Git!
+
+1. Copy the example file:
+   ```bash
+   cp supabase-secret.yaml.example supabase-secret.yaml
+   ```
+
+2. Edit `supabase-secret.yaml` and add your actual Supabase credentials:
+   - `SUPABASE_URL`: Your Supabase project URL
+   - `SUPABASE_KEY`: Your Supabase service role key
+
+3. Apply the secret:
+   ```bash
+   kubectl apply -f supabase-secret.yaml
+   ```
+
+The secret is referenced by `backend-deployment.yaml` and will be mounted as environment variables in the backend pod.
+
+## Building and Deploying
+
 If you build images locally and want k3s to use them, follow one of these options:
 
 1) Import images into k3s containerd (recommended for local k3s):
