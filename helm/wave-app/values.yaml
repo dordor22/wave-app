@@ -22,7 +22,7 @@ service:
     nodePort: 30080
 
 supabase:
-  existingSecret: ""
+  existingSecret: "supabase-secret"
   url: ""
   key: ""
 
