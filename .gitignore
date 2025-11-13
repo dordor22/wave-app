@@ -4,6 +4,10 @@ dist/
 # Env
 *.env
 .env
+docker-compose.override.yml
+docker-compose.local.yml
+secrets/**
+k3s/local/**
 
 # Secrets - never commit secrets!
 **/supabase-secret.yaml
